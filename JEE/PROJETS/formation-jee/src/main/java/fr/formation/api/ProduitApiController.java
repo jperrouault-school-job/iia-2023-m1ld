@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import fr.formation.exception.ProduitNotFoundException;
+import fr.formation.model.Fournisseur;
 import fr.formation.model.Produit;
 import fr.formation.projection.ProduitProjection;
 import fr.formation.projection.ProduitWithFournisseurProjection;
 import fr.formation.repo.ProduitRepository;
+import fr.formation.request.ProduitRequest;
 import fr.formation.response.ProduitResponse;
 
 @RestController
@@ -63,8 +65,16 @@ public class ProduitApiController {
     }
 
     @PostMapping
-    public Produit add(@RequestBody Produit produit) {
+    public Produit add(@RequestBody ProduitRequest request) {
+        Produit produit = new Produit();
+        Fournisseur fournisseur = new Fournisseur();
+
+        BeanUtils.copyProperties(request, produit);
+        produit.setFournisseur(fournisseur);
+        fournisseur.setId(request.getFournisseurId());
+
         this.repoProduit.save(produit);
+        
         return produit;
     }
 }
