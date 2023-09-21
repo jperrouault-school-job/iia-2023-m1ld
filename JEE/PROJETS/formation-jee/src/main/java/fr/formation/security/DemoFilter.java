@@ -20,14 +20,18 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DemoFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        
-        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        
-        Authentication authentication = new UsernamePasswordAuthenticationToken("username", "password qui sert a rien", authorities);
+        String token = request.getHeader("DEMO-TOKEN");
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (token != null && token.equals("XXX")) {
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            
+            Authentication authentication = new UsernamePasswordAuthenticationToken("username", "password qui sert a rien", authorities);
 
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        
         System.out.println("PRINCIPE DU FILTRE : Appelé à chaque request ...");
 
         // On passe au filtre suivant ...
