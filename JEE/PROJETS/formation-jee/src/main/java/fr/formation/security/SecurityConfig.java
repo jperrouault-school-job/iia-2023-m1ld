@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,6 +39,9 @@ public class SecurityConfig {
         // http.formLogin();
         // http.httpBasic();
         http.csrf(c -> c.disable());
+
+        // On désactive les Cookies
+        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
         // http.addFilterBefore(demoFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtHeaderFilter, UsernamePasswordAuthenticationFilter.class);
