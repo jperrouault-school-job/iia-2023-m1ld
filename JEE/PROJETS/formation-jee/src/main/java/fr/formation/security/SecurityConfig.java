@@ -2,6 +2,8 @@ package fr.formation.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,9 +28,9 @@ public class SecurityConfig {
     // }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, DemoFilter demoFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtHeaderFilter jwtHeaderFilter) throws Exception {
         http.authorizeHttpRequests(authorization -> {
-            authorization.requestMatchers("/api/user").permitAll();
+            authorization.requestMatchers("/api/user/**").permitAll();
             authorization.requestMatchers("/login").permitAll();
             authorization.requestMatchers("/**").authenticated();
         });
@@ -37,9 +39,15 @@ public class SecurityConfig {
         // http.httpBasic();
         http.csrf(c -> c.disable());
         
-        http.addFilterBefore(demoFilter, UsernamePasswordAuthenticationFilter.class);
+        // http.addFilterBefore(demoFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtHeaderFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
