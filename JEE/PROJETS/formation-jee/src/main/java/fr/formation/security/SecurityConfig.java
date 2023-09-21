@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -25,7 +26,7 @@ public class SecurityConfig {
     // }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, DemoFilter demoFilter) throws Exception {
         http.authorizeHttpRequests(authorization -> {
             authorization.requestMatchers("/api/user").permitAll();
             authorization.requestMatchers("/login").permitAll();
@@ -33,9 +34,11 @@ public class SecurityConfig {
         });
 
         // http.formLogin();
-        http.httpBasic();
+        // http.httpBasic();
         http.csrf(c -> c.disable());
         
+        http.addFilterBefore(demoFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
