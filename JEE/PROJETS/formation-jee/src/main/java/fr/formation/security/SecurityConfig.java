@@ -32,7 +32,8 @@ public class SecurityConfig {
             authorization.requestMatchers("/**").authenticated();
         });
 
-        http.formLogin();
+        // http.formLogin();
+        http.httpBasic();
         http.csrf(c -> c.disable());
         
         return http.build();
