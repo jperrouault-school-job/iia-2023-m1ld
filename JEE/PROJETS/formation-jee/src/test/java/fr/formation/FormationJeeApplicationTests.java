@@ -25,6 +25,13 @@ class FormationJeeApplicationTests {
 	private ProduitRepository repoProduit;
 
 	@Test
+	void shouldFindAll() {
+		this.ctrl.findAll();
+
+		Mockito.verify(this.repoProduit).findAll();
+	}
+
+	@Test
 	void shouldNotSaveProduitWhenNomIsEmpty() {
 		Assertions.assertNotNull(ctrl);
 		Assertions.assertTrue(true);
@@ -71,7 +78,6 @@ class FormationJeeApplicationTests {
 		ctrl.add(request);
 
 		Mockito.verify(this.repoProduit).save(Mockito.any());
-
 	}
 
 }
