@@ -1,15 +1,23 @@
 package fr.formation.api;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import fr.formation.model.Produit;
 import fr.formation.repo.ProduitRepository;
 import fr.formation.request.ProduitRequest;
 
@@ -23,9 +31,27 @@ class ProduitApiControllerTest {
 	@Mock
 	private ProduitRepository repoProduit;
 
+	private MockMvc mockMvc;
+
+	@BeforeEach
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.standaloneSetup(ctrl).build();
+	}
+
 	@Test
-	void shouldFindAll() {
-		this.ctrl.findAll();
+	void shouldFindAllStatusOk() throws Exception {
+		// this.ctrl.findAll();
+		Mockito.when(this.repoProduit.findAll()).thenReturn(
+			List.of(new Produit(), new Produit())
+		);
+
+		this.mockMvc.perform(
+			MockMvcRequestBuilders.get("/api/produit")
+		)
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+		;
 
 		Mockito.verify(this.repoProduit).findAll();
 	}
