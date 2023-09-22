@@ -1,4 +1,4 @@
-package fr.formation;
+package fr.formation.api;
 
 import java.math.BigDecimal;
 
@@ -10,13 +10,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import fr.formation.api.ProduitApiController;
 import fr.formation.repo.ProduitRepository;
 import fr.formation.request.ProduitRequest;
 
 // @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-class FormationJeeApplicationTests {
+class ProduitApiControllerTest {
 	// @Autowired Réservé au contexte de SPRING
 	@InjectMocks
 	private ProduitApiController ctrl;

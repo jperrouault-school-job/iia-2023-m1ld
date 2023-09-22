@@ -1,0 +1,1 @@
+INSERT INTO prod (prod_id, nom, prix) VALUES (1, 'test', 1234)
