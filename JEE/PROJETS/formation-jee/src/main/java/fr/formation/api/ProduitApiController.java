@@ -69,6 +69,10 @@ public class ProduitApiController {
         Produit produit = new Produit();
         Fournisseur fournisseur = new Fournisseur();
 
+        if (request.getNom() == null || request.getNom().equals("")) {
+            return null;
+        }
+
         BeanUtils.copyProperties(request, produit);
         produit.setFournisseur(fournisseur);
         fournisseur.setId(request.getFournisseurId());
