@@ -2,6 +2,9 @@ package fr.formation.api;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -54,6 +57,28 @@ class ProduitApiControllerTest {
 		;
 
 		Mockito.verify(this.repoProduit).findAll();
+	}
+
+	@Test
+	void shouldFindByIdStatusOk() throws Exception {
+		Mockito	.when(this.repoProduit.findById(1))
+				.thenReturn(Optional.of(new Produit()));
+
+		this.mockMvc.perform(
+			MockMvcRequestBuilders.get("/api/produit/1")
+		)
+		.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	void shouldFindByIdStatusNotFound() throws Exception {
+		Mockito	.when(this.repoProduit.findById(1))
+				.thenReturn(Optional.empty());
+
+		this.mockMvc.perform(
+			MockMvcRequestBuilders.get("/api/produit/1")
+		)
+		.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
