@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html   lang="fr"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{component/structure.html::structure('Liste des fournisseurs', ~{::section})}">
+<body>
+    <section>
+        <a class="btn btn-primary" href="fournisseur/ajouter">Créer un nouveau fournisseur</a>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="fournisseur : ${ fournisseurs }">
+                    <td>[[ ${ fournisseur.id } ]]</td>
+                    <td>
+                        <a th:text="${ fournisseur.nom }" th:href="@{ fournisseur/details(id=${ fournisseur.id }) }"></a>
+
+                    </td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{ fournisseur/modifier(id=${ fournisseur.id }) }">Modifier</a>
+                        <a class="btn btn-danger" th:href="@{ fournisseur/supprimer(id=${ fournisseur.id }) }">Supprimer</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
