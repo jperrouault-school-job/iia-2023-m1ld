@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html   lang="fr"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{component/structure.html::structure(${ produit == null ? 'Ajouter' : 'Modifier' }, ~{::section})}">
+
+<body>
+    <section>
+        <form method="POST">
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="text" name="nom" th:value="${ produit?.nom }" placeholder="Nom" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="text" name="prix" th:value="${ produit?.prix }" placeholder="Prix" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <select name="fournisseurId" th:value="${ produit?.prix }" placeholder="Fournisseur" class="form-select">
+                        <option th:each="fournisseur : ${ fournisseurs }"
+                                th:value="${ fournisseur.id }"
+                                th:text="${ fournisseur.nom }"
+                                th:selected="${ produit?.fournisseur?.id == fournisseur.id }" />
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <input class="btn btn-success" type="submit" value="Valider" />
+            </div>
+        </form>
+    </section>
+</body>
+</html>

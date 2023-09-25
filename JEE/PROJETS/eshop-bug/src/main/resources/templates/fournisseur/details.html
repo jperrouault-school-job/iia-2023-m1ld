@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html   lang="fr"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{component/structure.html::structure(${ fournisseur.nom }, ~{::section})}">
+
+<body>
+    <section>
+        <h2>Liste des produits</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="produit : ${ fournisseur.produits }">
+                    <td>[[ ${ produit.id } ]]</td>
+                    <td>[[ ${ produit.nom } ]]</td>
+                    <td>[[ ${ produit.prix } ]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

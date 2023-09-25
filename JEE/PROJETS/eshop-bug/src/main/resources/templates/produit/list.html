@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html   lang="fr"
+        xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{component/structure.html::structure('Liste des produits', ~{::section})}">
+<body>
+    <section>
+        <a class="btn btn-primary" href="produit/ajouter">Créer un nouveau produit</a>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Fournisseur</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="produit : ${ produits }">
+                    <td>[[ ${ produit.id } ]]</td>
+                    <td>[[ ${ produit.nom } ]]</td>
+                    <td>[[ ${ produit.prix } ]]</td>
+                    <td>[[ ${ produit.fournisseur?.nom } ]]</td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{ produit/modifier(id=${ produit.id }) }">Modifier</a>
+                        <a class="btn btn-danger" th:href="@{ produit/supprimer(id=${ produit.id }) }">Supprimer</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
