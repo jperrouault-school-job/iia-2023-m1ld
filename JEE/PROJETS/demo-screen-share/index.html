@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Démonstration</title>
+</head>
+
+
+<body>
+
+  <div class="local">
+    <h1>Vidéo partagée</h1>
+    <img id="localVideo" />
+  </div>
+
+  <script>
+    (async () => {
+      const localVideo = document.querySelector('#localVideo');
+      const signalingWebSocket = new WebSocket("ws://localhost:8080/screening");
+      
+      signalingWebSocket.onmessage = msg => {
+        console.log("Message reçu");
+        localVideo.src = msg.data;
+      };
+
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          audio: false,
+          video: true
+        });
+
+        // const stream = await navigator.mediaDevices.getUserMedia({
+        //   audio: false,
+        //   video: true
+        // });
+
+        const screenProcessor = new MediaStreamTrackProcessor({
+          track: stream.getVideoTracks()[0],
+        });
+
+        let screenFrame;
+        const screenReader = screenProcessor.readable.getReader();
+        screenReader.read().then(function readScreenFrame({ done, value: frame }) {
+          screenFrame?.close();
+          screenFrame = frame;
+          
+          if (done) {
+            console.log("Terminé !");
+            return;
+          }
+          
+          const canvas = document.createElement('canvas');
+          canvas.height = frame.codedHeight * 0.9;
+          canvas.width = frame.codedWidth * 0.9;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+
+          console.log("Envoie de données ...");
+          signalingWebSocket.send(canvas.toDataURL());
+
+          return screenReader.read().then(readScreenFrame);
+        });
+      }
+
+      catch {
+        console.log("Partage écran refusé.");
+      }
+    })();
+  </script>
+</body>
+</html>
