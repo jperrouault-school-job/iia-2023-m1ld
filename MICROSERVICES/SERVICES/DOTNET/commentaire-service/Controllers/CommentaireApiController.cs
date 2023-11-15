@@ -11,36 +11,65 @@ public class CommentaireApiController : ControllerBase
 {
     private readonly ILogger<CommentaireApiController> _logger;
     private readonly CommentaireContext _commentaireContext;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public CommentaireApiController(ILogger<CommentaireApiController> logger, CommentaireContext commentaireContext)
+    public CommentaireApiController(ILogger<CommentaireApiController> logger, CommentaireContext commentaireContext, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _commentaireContext = commentaireContext;
+        _httpClientFactory = httpClientFactory;
     }
 
     [HttpGet("{id}")]
-    public IActionResult FindById([FromRoute] string id)
+    public async Task<IActionResult> FindById([FromRoute] string id)
     {
-        Commentaire commentaire = this._commentaireContext.Commentaires.First(c => c.Id == id);
-        Produit produit = this._commentaireContext.Produits.First(p => p.Id == commentaire.ProduitId);
+        Commentaire commentaire = _commentaireContext.Commentaires.First(c => c.Id == id);
+        HttpClient httpClient = _httpClientFactory.CreateClient("produit-service");
+        string produitNom = await httpClient.GetStringAsync("/api/produit/" + commentaire.ProduitId + "/get-name");
 
         CommentaireResponse response = new CommentaireResponse
         {
             Note = (commentaire.NoteQualite + commentaire.NoteQualitePrix + commentaire.NoteFacilite) / 3,
             Texte = commentaire.Texte,
             ProduitId = commentaire.ProduitId,
-            ProduitNom = produit.Nom
+            ProduitNom = produitNom
         };
 
         return Ok(response);
     }
 
-    [HttpPost]
-    public IActionResult Add(CommentaireRequest request)
+    [HttpGet("by-produit-id/{produitId}")]
+    public IActionResult FindAllByProduitId([FromRoute] string produitId)
     {
-        Produit produit = this._commentaireContext.Produits.First(p => p.Id == request.ProduitId);
+        IEnumerable<Commentaire> commentaires = _commentaireContext.Commentaires.Where(c => c.ProduitId == produitId);
+        IEnumerable<CommentaireResponse> resp = commentaires.Select(c => new CommentaireResponse
+        {
+            Texte = c.Texte,
+            Note = (c.NoteQualite + c.NoteQualitePrix + c.NoteFacilite) / 3
+        });
 
-        if (!produit.Notable) {
+        return Ok(resp);
+    }
+
+    [HttpGet("note/by-produit-id/{produitId}")]
+    public IActionResult GetNoteByProduitId([FromRoute] string produitId)
+    {
+        IEnumerable<Commentaire> commentaires = _commentaireContext.Commentaires.Where(c => c.ProduitId == produitId);
+
+        if (commentaires.Count() == 0) {
+            return Ok(-1);
+        }
+
+        return Ok(commentaires.Select(c => (c.NoteQualite + c.NoteQualitePrix + c.NoteFacilite) / 3).Average());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Add(CommentaireRequest request)
+    {
+        HttpClient httpClient = _httpClientFactory.CreateClient("produit-service");
+        bool isProduitNotable = await httpClient.GetFromJsonAsync<bool>("/api/produit/" + request.ProduitId + "/is-notable");
+
+        if (!isProduitNotable) {
             return BadRequest(false);
         }
 
@@ -53,8 +82,8 @@ public class CommentaireApiController : ControllerBase
             ProduitId = request.ProduitId
         };
 
-        this._commentaireContext.Commentaires.Add(commentaire);
-        this._commentaireContext.SaveChanges();
+        _commentaireContext.Commentaires.Add(commentaire);
+        _commentaireContext.SaveChanges();
 
         return Ok(commentaire.Id);
     }
