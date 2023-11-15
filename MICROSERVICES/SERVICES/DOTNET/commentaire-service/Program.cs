@@ -10,7 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.UseDbContextConfiguration(builder.Configuration.GetConnectionString("CommentaireContext"));
-builder.Services.UseHttpConfiguration("produit-service", "http://172.25.16.1:8081");
+builder.Services.UseEurekaConfiguration();
+builder.Services.UseHttpConfiguration("produit-service", "lb://produit-service");
 
 var app = builder.Build();
 

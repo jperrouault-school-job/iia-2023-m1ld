@@ -2,7 +2,13 @@
 	"folders": [
 		{
 			"path": "produit-service"
+		},
+		{
+			"name": "eureka-server",
+			"path": "eureka-server"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
 }
