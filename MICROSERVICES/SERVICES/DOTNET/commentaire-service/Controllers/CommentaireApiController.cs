@@ -26,7 +26,7 @@ public class CommentaireApiController : ControllerBase
 
         CommentaireResponse response = new CommentaireResponse
         {
-            Note = commentaire.Note,
+            Note = (commentaire.NoteQualite + commentaire.NoteQualitePrix + commentaire.NoteFacilite) / 3,
             Texte = commentaire.Texte,
             ProduitId = commentaire.ProduitId,
             ProduitNom = produit.Nom
@@ -47,7 +47,9 @@ public class CommentaireApiController : ControllerBase
         Commentaire commentaire = new Commentaire
         {
             Texte = request.Texte,
-            Note = request.Note,
+            NoteQualite = request.NoteQualite,
+            NoteQualitePrix = request.NoteQualitePrix,
+            NoteFacilite = request.NoteFacilite,
             ProduitId = request.ProduitId
         };
 

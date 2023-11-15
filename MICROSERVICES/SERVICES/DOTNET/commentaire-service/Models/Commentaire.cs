@@ -15,8 +15,14 @@ public class Commentaire
     [Column("texte")]
     public string Texte { get; set; } = "";
 
-    [Column("note")]
-    public int Note { get; set; }
+    [Column("note_qualite")]
+    public int NoteQualite { get; set; }
+
+    [Column("note_qualite_prix")]
+    public int NoteQualitePrix { get; set; }
+
+    [Column("note_facilite")]
+    public int NoteFacilite { get; set; }
 
     [Column("produit_id")]
     public string ProduitId { get; set; } = "";
