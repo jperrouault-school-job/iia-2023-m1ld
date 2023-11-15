@@ -1,0 +1,27 @@
+# Créer un nouveau projet
+dotnet new webapi -o NomProjet
+cd NomProjet
+
+# Démarrer le projet
+dotnet dev-certs https --trust # Si pas déjà fait
+dotnet run
+
+# Ajouter Entity Framework PostgreSQL
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+
+# Générer la base de données
+dotnet tool install --global dotnet-ef # Si pas déjà fait
+export PATH="$PATH:/root/.dotnet/tools"
+
+dotnet ef migrations add InitialCreate
+
+# Client Eureka
+dotnet add package Steeltoe.Discovery.Eureka
+
+# Circuit Breaker
+dotnet add package Microsoft.Extensions.Http.Polly
+
+# Client RabbitMQ
+dotnet add package RabbitMQ.Client --version 5.1.2
+dotnet add package Steeltoe.Connector.ConnectorCore
+dotnet add package Steeltoe.Messaging.RabbitMQ
