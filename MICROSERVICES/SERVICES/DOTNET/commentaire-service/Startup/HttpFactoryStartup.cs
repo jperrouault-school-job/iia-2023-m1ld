@@ -6,6 +6,7 @@ public static class HttpFactoryStartup
     {
         return services.AddHttpClient(clientName, client => {
             client.BaseAddress = new Uri(url);
-        });
+        })
+        .AddRandomLoadBalancer();
     }
 }
