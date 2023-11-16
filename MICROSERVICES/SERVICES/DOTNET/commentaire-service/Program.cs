@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.UseDbContextConfiguration(builder.Configuration.GetConnectionString("CommentaireContext"));
 builder.Services.UseEurekaConfiguration();
 builder.Services.UseHttpConfiguration("produit-service", "lb://produit-service");
+builder.Services.UseRabbitConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
@@ -22,7 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
