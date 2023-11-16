@@ -1,0 +1,44 @@
+# Créer un réseau "messaging"
+docker network create messaging
+
+
+# - ZooKeeper
+
+# Exécuter un container ZooKeeper
+docker run -d --name zookeeper --network messaging -p 2181:2181 -e ZOOKEEPER_TICK_TIME=2000 -e ZOOKEEPER_CLIENT_PORT=2181 confluentinc/cp-zookeeper
+
+# Arrêter ZooKeeper
+docker stop zookeeper
+
+# Relancer ZooKeeper
+docker start zookeeper
+
+# Supprimer ZooKeeper
+docker rm zookeeper
+
+
+# - Kafka
+
+# Build du Dockerfile (commande à exécuter au même endroit que le Dockerfile et le fichier server.properties)
+docker build -t kafka .
+
+# Exécuter un container Kafka
+docker run -d --name kafka --network messaging -p 9092:9092 kafka
+
+# Vérifier si les containers sont bien actifs
+docker ps
+
+# Se connecter au container - exécuter des commandes kafka
+docker exec -it kafka bash
+
+# Une fois connecté, pour exécuter un producer Kafka
+bin/kafka-console-producer.sh --topic nomtopic --bootstrap-server localhost:9092
+
+# Une fois connecté, pour exécuter un consumer Kafka
+bin/kafka-console-consumer.sh --topic nomtopic --bootstrap-server localhost:9092 --from-beginning
+
+# Une fois connecté, pour lister les topics
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+# Une fois connecté, pour supprimer un topic
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic nomtopic
