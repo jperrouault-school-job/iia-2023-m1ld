@@ -6,6 +6,10 @@
 		{
 			"name": "eureka-server",
 			"path": "eureka-server"
+		},
+		{
+			"name": "demo-kafka",
+			"path": "demo-kafka"
 		}
 	],
 	"settings": {
