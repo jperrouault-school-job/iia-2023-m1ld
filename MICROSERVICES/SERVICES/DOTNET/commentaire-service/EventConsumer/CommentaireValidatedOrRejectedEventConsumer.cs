@@ -2,6 +2,7 @@ using commentaire_service.Context;
 using commentaire_service.Models;
 using commentaire_service.Models.Enums;
 using commentaire_service.Event;
+using commentaire_service.Command;
 using Steeltoe.Messaging.RabbitMQ.Attributes;
 using Steeltoe.Messaging.RabbitMQ.Core;
 using Steeltoe.Messaging.RabbitMQ.Extensions;
@@ -24,6 +25,8 @@ public class CommentaireValidatedOrRejectedEventConsumer {
     [RabbitListener(Binding = "ms.commentaire.commentaire.validate")]
      public void on(CommentaireValidatedEvent evt)
     {
+        RabbitTemplate rabbitTemplate = _services.GetRabbitTemplate();
+
         using (var scope = _services.CreateScope())
         {
             var commentaireContext = scope.ServiceProvider.GetService<CommentaireContext>();
@@ -31,6 +34,14 @@ public class CommentaireValidatedOrRejectedEventConsumer {
 
             commentaire.Etat = CommentaireEtat.OK;
             commentaireContext.SaveChanges();
+
+            rabbitTemplate.ConvertAndSend("ms.commentaire", "commentaire.created", new CreatedCommentaireCommand
+            {
+                Id = evt.CommentaireId,
+                Texte = commentaire.Texte,
+                Note = (commentaire.NoteQualite + commentaire.NoteQualitePrix + commentaire.NoteFacilite) / 3,
+                ProduitId = evt.ProduitId
+            });
         }
     }
 

@@ -10,6 +10,9 @@
 		{
 			"name": "demo-kafka",
 			"path": "demo-kafka"
+		},
+		{
+			"path": "query-service"
 		}
 	],
 	"settings": {
