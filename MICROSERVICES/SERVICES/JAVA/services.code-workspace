@@ -13,6 +13,10 @@
 		},
 		{
 			"path": "query-service"
+		},
+		{
+			"name": "gateway-server",
+			"path": "gateway-server"
 		}
 	],
 	"settings": {
